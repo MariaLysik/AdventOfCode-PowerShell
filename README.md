@@ -1,4 +1,4 @@
-# AdventOfCode2024-PowerShell
-My solutions to Advent of Code 2024 in PowerShell
+# AdventOfCode-PowerShell
+My solutions to Advent of Code in PowerShell
 
-See: https://adventofcode.com/2024
+See: https://adventofcode.com/
