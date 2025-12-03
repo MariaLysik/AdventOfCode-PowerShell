@@ -35,7 +35,7 @@ $ranges | ForEach-Object {
   #Write-Host $_
   $min, $max = $_ -split '-'
   for ($i = [uint64]$min; $i -le [uint64]$max; $i++) {
-    if (Is-Invalid "$i") {
+    if ("$i" -match '^([1-9][0-9]*)\1+$') {
       #Write-Host 'found invalid' $i
       $sumOfInvalidIds += $i
     }
