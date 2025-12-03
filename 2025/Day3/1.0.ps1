@@ -1,32 +1,38 @@
-﻿$totalJoltage = 0
-$CACHE = @{}
+﻿$CACHE = @{}
 
-function Get-MaxJoltage([string]$bank) {
-  if ($CACHE[$bank]) {
-    return $CACHE[$bank]
+function Get-MaxJoltage([string]$bank,[int]$batteryCount) {
+  if ($batteryCount -le 0) {
+    return ""
+  }
+  $cacheKey = "$batteryCount" + ":" + $bank
+  if ($CACHE[$cacheKey]) {
+    return $CACHE[$cacheKey]
+  }
+  if ($bank.Length -eq $batteryCount) {
+    $CACHE[$cacheKey] = $bank
+    return $bank
   }
   $arr = $bank.ToCharArray()
-  $firstPointer = 0
-  $secondPointer = 1
-  for ($i = 1; $i -le $arr.Length-2; $i++) {
-    if($arr[$i] -gt $arr[$firstPointer]) {
-      $firstPointer = $i
-      $secondPointer = $i+1
+  $pointer = 0
+  for ($i = 1; $i -le $arr.Length-$batteryCount; $i++) {
+    if ($arr[$pointer] -eq '9') {
+      break
     }
-    if($secondPointer -lt $i -and $arr[$i] -gt $arr[$secondPointer]) {
-      $secondPointer = $i
+    if ($arr[$i] -gt $arr[$pointer]) {
+      $pointer = $i
     }
   }
-  if($secondPointer -lt $arr.Length-1 -and $arr[$arr.Length-1] -gt $arr[$secondPointer]) {
-    $secondPointer = $arr.Length-1
-  }
-  $joltage = $arr[$firstPointer] + $arr[$secondPointer]
-  $CACHE[$bank] = $joltage
+  $joltage = $arr[$pointer] + (Get-MaxJoltage $bank.substring($pointer+1) ($batteryCount-1))
+  $CACHE[$cacheKey] = $joltage
   return $joltage
 }
 
-Get-Content .\2025\Day3\1.1.txt | ForEach-Object {
-  $totalJoltage += [int](Get-MaxJoltage $_)
+$totalJoltage2 = 0
+$totalJoltage12 = 0
+Get-Content .\2025\Day3\1.0.txt | ForEach-Object {
+  $totalJoltage2 += [UInt64](Get-MaxJoltage $_ 2)
+  $totalJoltage12 += [UInt64](Get-MaxJoltage $_ 12)
 }
 
-Write-Host 'Part 1:' $totalJoltage
+Write-Host 'Part 1:' $totalJoltage2
+Write-Host 'Part 2:' $totalJoltage12
