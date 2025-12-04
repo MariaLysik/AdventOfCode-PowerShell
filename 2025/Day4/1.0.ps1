@@ -24,4 +24,21 @@ foreach ($roll in $rollsOfPaper.GetEnumerator()) {
     $accessedCount++
   }
 }
-Write-Host $accessedCount
+Write-Host 'Part 1:' $accessedCount
+
+$totalRemoved = 0
+while($rollsOfPaper.Count) {
+  $removed = 0
+  $keys = @($rollsOfPaper.Keys)
+  foreach ($roll in $keys) {
+    if ((Count-NeighbourRolls $roll) -lt 4) {
+      $rollsOfPaper.Remove($roll)
+      $removed++
+    }
+  }
+  if (-not $removed) {
+    break
+  }
+  $totalRemoved += $removed
+}
+Write-Host 'Part 2:' $totalRemoved
