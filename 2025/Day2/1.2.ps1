@@ -8,6 +8,7 @@ function Is-Invalid([string]$number) {
   if ($number -match "^(.)\1*$") {
     return $true
   }
+  # check could be narrowed down to prime dividers only (could be store in a cache, to avoid re-calculating them)
   for ($i = 2; $i -le $length / 2; $i++) {
     if ($length % $i -ne 0) {
       #Write-Host 'length' $length 'not a multiplication of' $i '> skipping'
