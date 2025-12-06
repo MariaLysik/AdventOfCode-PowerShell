@@ -30,7 +30,7 @@ if ($RANGES.Keys.Count) {
       $max = $RANGES[$key]
       continue
     }
-    if ($max -ge $key) {
+    if ($max -ge $key-1) { # ranges 1-2 and 3-4 should be joined, as these are only integers
       Write-Host 'merging' $min $max 'with' $key $RANGES[$key]
       $max = [Math]::Max($max, $RANGES[$key])
       continue
