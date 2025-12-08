@@ -1,45 +1,27 @@
-﻿$f = Get-Content .\2025\Day7\1.1.txt
+﻿$f = Get-Content .\2025\Day7\1.0.txt
 
-$maxX = $f.Length - 1
 $maxY = $f[0].Length - 1
-$global:splitCount = 0
-$visited = @{}
-
-function Move-Downward([string]$coords) {
-  if ($visited[$coords]) {
-    return
-  }
-  $visited[$coords] = 1
-  $x, $y = $coords -split ':'
-  $x = [int]$x
-  $y = [int]$y
-  if ($x -lt 0 -or $x -gt $maxX -or $y -lt 0 -or $y -gt $maxY) {
-    return
-  }
-  if ($f[$x][$y] -eq '^') {
-    $global:splitCount++
-    $left = $y-1
-    $right = $y+1
-    Move-Downward("${x}:${left}")
-    Move-Downward("${x}:${right}")
+$splits = 0
+$beams = @()
+0..$maxY | ForEach-Object {
+  if ($f[0][$_] -eq 'S') {
+    $beams += 1 
   }
   else {
-    $x++
-    Move-Downward("${x}:${y}")
+    $beams += 0
   }
 }
 
-function Find-Start {
-  $x = 0
-  $y = 0
-  while ($f[$x][$y] -ne "S" -and $x -lt $maxX -and $y -lt $maxY) {
-    $y++
+foreach ($line in $f) {
+  for ($i = 0; $i -lt $maxY; $i++) {
+    if ($line[$i] -eq '^' -and $beams[$i] -gt 0) {
+      $splits++
+      $beams[$i-1] += $beams[$i]
+      $beams[$i+1] += $beams[$i]
+      $beams[$i] = 0
+    }
   }
-  return "${x}:${y}"
 }
 
-$start = Find-Start
-Write-Host 'start' $start
-Move-Downward($start)
-
-Write-Host 'Part 1:' $splitCount
+Write-Host "Part 1:" $splits
+Write-Host "Part 2:" ($beams | Measure-Object -Sum).Sum
