@@ -1,9 +1,9 @@
 ﻿Measure-Command {
-  $connections = 10 # checnge to 1000 with real data
+  $f = Get-Content .\2025\Day8\1.0.txt
+  $connections = 10 # change to 1000 with real data
   $distances = @{}
   $boxes = @{}
   $circuits = @{}
-  $f = Get-Content .\2025\Day8\1.0.txt
   foreach ($coord in $f) {
     $x1, $y1, $z1 = $coord -split ','
     foreach($key in $boxes.Keys) {
@@ -17,18 +17,16 @@
     $boxes[$coord] = $null
   }
 
-  foreach($distance in @($distances.Keys | Sort-Object)) {
+  foreach($distance in @($distances.Keys | Sort-Object | Select-Object -First $connections)) {
     if ($null -eq $boxes[$distances[$distance][0]] -and $null -eq $boxes[$distances[$distance][1]]) {
       #Write-Host 'merging to new circuit'
       $circuits[$distance] = $distances[$distance]
       $boxes[$distances[$distance][0]] = $distance
       $boxes[$distances[$distance][1]] = $distance
-      $connections--
       continue
     }
     if ($boxes[$distances[$distance][0]] -eq $boxes[$distances[$distance][1]]) {
       #Write-Host 'skipping' $distances[$distance] 'are in the same circuit' $boxes[$distances[$distance][0]]
-      $connections--
       continue
     }
     if ($null -eq $boxes[$distances[$distance][0]]) {
@@ -44,16 +42,16 @@
     else {
       $leftBox = $boxes[$distances[$distance][0]]
       $rightBox = $boxes[$distances[$distance][1]]
-      #Write-Host 'merging circuits' $leftBox $rightBox
-      $circuits[$boxes[$distances[$distance][0]]] = @($circuits[$leftBox]) + @($circuits[$rightBox])
+      if ($circuits[$leftBox].Count -lt $circuits[$rightBox].Count) {
+        $leftBox = $boxes[$distances[$distance][1]]
+        $rightBox = $boxes[$distances[$distance][0]]
+      }
+      #Write-Host 'merging circuits' $leftBox "(" $circuits[$leftBox].Count ")" $rightBox "(" $circuits[$rightBox].Count ")"
+      $circuits[$leftBox] = @($circuits[$leftBox]) + @($circuits[$rightBox])
       foreach ($box in $circuits[$rightBox]) {
         $boxes[$box] = $leftBox
       }
       $circuits.Remove($rightBox)
-    }
-    $connections--
-    if ($connections -le 0) {
-      break
     }
   }
 
