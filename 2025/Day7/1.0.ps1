@@ -1,27 +1,27 @@
-﻿$f = Get-Content .\2025\Day7\1.0.txt
+﻿Measure-Command {
+  $f = Get-Content .\2025\Day7\1.1.txt
 
-$maxY = $f[0].Length - 1
-$splits = 0
-$beams = @()
-0..$maxY | ForEach-Object {
-  if ($f[0][$_] -eq 'S') {
-    $beams += 1 
-  }
-  else {
-    $beams += 0
-  }
-}
+  $maxY = $f[0].Length - 1
+  $splits = 0
+  $beams = @{}
 
-foreach ($line in $f) {
-  for ($i = 0; $i -lt $maxY; $i++) {
-    if ($line[$i] -eq '^' -and $beams[$i] -gt 0) {
-      $splits++
-      $beams[$i-1] += $beams[$i]
-      $beams[$i+1] += $beams[$i]
-      $beams[$i] = 0
+  $y = 0
+  while ($f[0][$y] -ne 'S' -and $y -lt $maxY) {
+  $y++
+  }
+  $beams[$y] = 1
+
+  foreach ($line in $f) {
+    for ($y = 1; $y -lt $maxY; $y++) {
+      if ($line[$y] -eq '^' -and $beams[$y] -gt 0) {
+        $splits++
+        $beams[$y-1] += $beams[$y]
+        $beams[$y+1] += $beams[$y]
+        $beams[$y] = 0
+      }
     }
   }
-}
 
-Write-Host "Part 1:" $splits
-Write-Host "Part 2:" ($beams | Measure-Object -Sum).Sum
+  Write-Host "Part 1:" $splits
+  Write-Host "Part 2:" ($beams.Values | Measure-Object -Sum).Sum
+}
