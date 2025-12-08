@@ -17,7 +17,7 @@
         $splits++
         $beams[$y-1] += $beams[$y]
         $beams[$y+1] += $beams[$y]
-        $beams[$y] = 0
+        $beams.Remove($y)
       }
     }
   }
