@@ -1,5 +1,5 @@
 ﻿Measure-Command {
-  $f = Get-Content .\2025\Day9\1.1.txt
+  $f = Get-Content .\2025\Day9\1.0.txt
   $n = $f.Length
 
   $redTiles = @()
@@ -80,6 +80,3 @@
   }
   Write-Host 'Part 2:' $maxArea
 }
-
-# That's not the right answer; your answer is too low.
-#Part 2: 1469113275
