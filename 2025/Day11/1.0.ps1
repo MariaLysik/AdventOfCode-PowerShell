@@ -6,7 +6,7 @@
   
   function Count-Paths([string]$from,[string]$to) {
     $cacheKey = "${from}>${to}"
-    if($CACHE[$cacheKey]) {
+    if($CACHE.ContainsKey($cacheKey)) {
       return $CACHE[$cacheKey]
     }
     if ($from -eq $to) {
@@ -26,6 +26,7 @@
   }
 
   Write-Host 'Part 1:' (Count-Paths -from 'you' -to 'out')
-  Write-Host "Part 2:" ((Count-Paths -from 'svr' -to 'fft') * (Count-Paths -from 'fft' -to 'dac') * (Count-Paths -from 'dac' -to 'out'))
-  #Write-Host "Part 2:" (Count-Paths -from 'svr' -to 'dac') * (Count-Paths -from 'dac' -to 'fft') * (Count-Paths -from 'fft' -to 'out')
+  Write-Host "Part 2:" (
+    (Count-Paths -from 'svr' -to 'fft') * (Count-Paths -from 'fft' -to 'dac') * (Count-Paths -from 'dac' -to 'out') +
+    (Count-Paths -from 'svr' -to 'dac') * (Count-Paths -from 'dac' -to 'fft') * (Count-Paths -from 'fft' -to 'out') )
 }
