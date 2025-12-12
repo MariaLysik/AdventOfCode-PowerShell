@@ -22,20 +22,21 @@ foreach($number in $DATA_INPUT) {
     $sequence += ($currentDigit - $previousDigit)
     $previousDigit = $currentDigit
   }
-  if ($null -eq $CACHE[($sequence -join ',')]) {
-    $CACHE[($sequence -join ',')] = @{}
+  $cacheKey = ($sequence -join ',')
+  if (-not $CACHE.ContainsKey($cacheKey)) {
+    $CACHE[$cacheKey] = @{}
   }
-  $CACHE[($sequence -join ',')][$buyer] = $currentDigit
+  $CACHE[$cacheKey][$buyer] = $currentDigit
   for($i = $SEQUENCE_FRAME; $i -lt $ITERATIONS; $i++) {
     $result = Get-ProgramOutput $result
     $currentDigit = $result % 10
     $currentDifference = $currentDigit - $previousDigit
     $sequence = $sequence[1..($sequence.Length-1)] + $currentDifference
     $currentSequenceKey = ($sequence -join ',')
-    if ($null -eq $CACHE[$currentSequenceKey]) {
+    if (-not $CACHE.ContainsKey($currentSequenceKey)) {
       $CACHE[$currentSequenceKey] = @{}
     }
-    if ($null -eq $CACHE[$currentSequenceKey][$buyer]) {
+    if (-not $CACHE[$currentSequenceKey].ContainsKey($buyer)) {
       $CACHE[$currentSequenceKey][$buyer] = $currentDigit
     }
     $previousDigit = $currentDigit

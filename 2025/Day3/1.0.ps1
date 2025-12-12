@@ -5,7 +5,7 @@ function Get-MaxJoltage([string]$bank,[int]$batteryCount) {
     return ""
   }
   $cacheKey = "$batteryCount" + ":" + $bank
-  if ($CACHE[$cacheKey]) {
+  if ($CACHE.ContainsKey($cacheKey)) {
     return $CACHE[$cacheKey]
   }
   if ($bank.Length -eq $batteryCount) {
